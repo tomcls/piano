@@ -8,7 +8,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const jwt = require("jsonwebtoken")
 
-const userListRouter = require('./routes/users/list');
+const metricListRouter = require('./routes/metric/list');
+const metricAddRouter = require('./routes/metric/add');
 
 
 const app = express();
@@ -23,7 +24,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.all('*', validateToken);
 
-app.use('/users/list', userListRouter);
+app.use('/metric/list', metricListRouter);
+app.use('/metric/add', metricAddRouter);
 
 app.set('port', process.env.PORT || 3000);
 
@@ -34,11 +36,7 @@ function validateToken(req, res, next) {
     const token = req.headers["authorization"];
     if (req.path.indexOf('/public/') >= 0 || req.path === '/users/login' || 
         req.path === '/users/request-password' ||
-        req.path === '/users/reset-password'||
-        req.path === '/users/check-auth' ||
-        req.path === '/side-effects/add-survey' ||
-        req.path === '/moods/add-survey' ||
-        req.path === '/users/add' ) return next();
+        req.path === '/users/reset-password' ) return next();
     //the request header contains the token "Bearer <token>", split the string and use the second value in the split array.
     if (token == null) return res.status(400).json({error:"Authorization not present"});
     jwt.verify(token, process.env.API_SECRET, (err, user) => {
