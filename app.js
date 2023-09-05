@@ -41,7 +41,7 @@ function validateToken(req, res, next) {
     if (token == null) return res.status(400).json({error:"Authorization not present"});
     jwt.verify(token, process.env.API_SECRET, (err, user) => {
         if (err) {
-            console.log(error);
+            console.log(err);
            return res.status(403).json({error:"Authorization not valid"});
         }
         else {
